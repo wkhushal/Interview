@@ -16,7 +16,9 @@ jobs:
       uses: warrenbuckley/Setup-MSBuild@v1
     - name: Build with MSBuild
       run: msbuild  Interview.sln -p:Configuration=Release
-    - name: Setup VSTest.exe
-      uses: Malcolmnixon/Setup-VSTest@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 2.2.108
     - name: Run Tests
-      run: vstest.console Interview.Tests\bin\Release\Interview.Tests.dll
+      run: dotnet test --no-build
