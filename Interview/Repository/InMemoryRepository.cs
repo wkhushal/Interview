@@ -1,11 +1,13 @@
-﻿using Interview.Store;
+﻿using Interview.Model;
+using Interview.Store;
+using Interview.Storeable;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Interview.Repository
 {
-    public class InMemoryRepository<T, I> : IRepository<T, I>
-        where T : IStoreable<I>
+    public class InMemoryRepository : IRepository<IStoreable<Person>, Person>
     {
         private readonly IStore _store;
         public InMemoryRepository(IStore store)
@@ -13,36 +15,49 @@ namespace Interview.Repository
             _store = store ?? throw new ArgumentNullException(nameof(store));
         }
 
-        public IEnumerable<T> GetAll()
+        public IEnumerable<IStoreable<Person>> GetAll()
         {
-            throw new NotImplementedException();
+            var getAllTask = _store.GetAllAsync(default);
+            getAllTask.Wait();
+            return getAllTask.Result.Select(item => new PersonStore { Id = item } as IStoreable<Person>);
         }
 
-        public T Get(I id)
+        public IStoreable<Person> Get(Person person)
         {
-            if(id == null)
+            if (person == null)
             {
-                throw new ArgumentNullException(nameof(id));
+                throw new ArgumentNullException(nameof(person));
             }
-            throw new NotImplementedException();
-        }
+            var getTask = _store.GetAsync(person.Id, default);
 
-        public void Delete(I id)
-        {
-            if (id == null)
+            getTask.Wait();
+            if(getTask.Result is null)
             {
-                throw new ArgumentNullException(nameof(id));
+                return null;
             }
-            throw new NotImplementedException();
+            return new PersonStore { Id = getTask.Result } as IStoreable<Person>;
         }
 
-        public void Save(T item)
+        public void Delete(Person person)
+        {
+            if (person == null)
+            {
+                throw new ArgumentNullException(nameof(person));
+            }
+            var delTask = _store.DeleteAsync(person.Id, default);
+
+            delTask.Wait();
+        }
+
+        public void Save(IStoreable<Person> item)
         {
             if (item == null)
             {
                 throw new ArgumentNullException(nameof(item));
             }
-            throw new NotImplementedException();
+            Person person = item.Id;
+            var saveTask = _store.SaveAsync(person, default);
+            saveTask.Wait();
         }
     }
 }

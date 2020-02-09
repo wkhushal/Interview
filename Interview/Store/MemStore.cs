@@ -22,7 +22,7 @@ namespace Interview.Store
             {
                 return Task.CompletedTask;
             }
-            return null;
+            return Task.FromResult<Person>(null);
         }
 
         public Task<IEnumerable<Person>> GetAllAsync(CancellationToken ct)
@@ -36,7 +36,7 @@ namespace Interview.Store
             {
                 return Task.FromResult(person);
             }
-            return null;
+            return Task.FromResult<Person>(null);
         }
 
         public Task SaveAsync(Person item, CancellationToken ct)

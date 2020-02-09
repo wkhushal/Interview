@@ -7,6 +7,8 @@ using Interview.Repository;
 using AutoFixture.Xunit2;
 using Interview.Model;
 using Interview.Storeable;
+using Interview.Store;
+using System.Linq;
 
 namespace Interview.Tests
 {
@@ -17,6 +19,7 @@ namespace Interview.Tests
         {
             _fixture = new Fixture();
             _fixture.Customize(new AutoMoqCustomization());
+            _fixture.Inject<IStore>(_fixture.Create<MemStore>());
             _fixture.Inject(_fixture.Create<PersonStore>());
         }
 
@@ -24,7 +27,7 @@ namespace Interview.Tests
         public void ConstructorGuardArgumentNull()
         {
             var assertion = new GuardClauseAssertion(_fixture);
-            var constructors = typeof(InMemoryRepository<IStoreable<Person>, Person>).GetConstructors();
+            var constructors = typeof(InMemoryRepository).GetConstructors();
             assertion.Verify(constructors);
         }
 
@@ -32,25 +35,31 @@ namespace Interview.Tests
         public void GetAll()
         {
             // arrange
-            var sut = _fixture.Create<InMemoryRepository<IStoreable<Person>, Person>>();
+            var sut = _fixture.Create<InMemoryRepository>();
+
+            // action
+            var result = sut.GetAll();
             // asserts
-            Assert.Throws<NotImplementedException>(() => sut.GetAll());
+            Assert.NotNull(result);
+            Assert.Empty(result);
         }
 
         [Theory, AutoData]
         public void Get(Person id)
         {
             // arrange
-            var sut = _fixture.Create<InMemoryRepository<IStoreable<Person>, Person>>();
+            var sut = _fixture.Create<InMemoryRepository>();
+            // action
+            var result = sut.Get(id);
             // asserts
-            Assert.Throws<NotImplementedException>(() => sut.Get(id));
+            Assert.Null(result);
         }
 
         [Fact]
         public void GetThrowsArgumentNullException()
         {
             // arrange
-            var sut = _fixture.Create<InMemoryRepository<IStoreable<Person>, Person>>();
+            var sut = _fixture.Create<InMemoryRepository>();
             // asserts
             Assert.Throws<ArgumentNullException>(() => sut.Get(null));
         }
@@ -59,34 +68,44 @@ namespace Interview.Tests
         public void Save(PersonStore item)
         {
             // arrange
-            var sut = _fixture.Create<InMemoryRepository<IStoreable<Person>, Person>>();
+            var sut = _fixture.Create<InMemoryRepository>();
+            // action
+            sut.Save(item);
             // asserts
-            Assert.Throws<NotImplementedException>(() => sut.Save(item));
+            var allStored = sut.GetAll();
+            Assert.NotEmpty(allStored);
+            Assert.Equal(item, allStored.First());
         }
 
         [Fact]
         public void SaveThrowsArgumentNullException()
         {
             // arrange
-            var sut = _fixture.Create<InMemoryRepository<IStoreable<Person>, Person>>();
+            var sut = _fixture.Create<InMemoryRepository>();
             // asserts
             Assert.Throws<ArgumentNullException>(() => sut.Save(null));
         }
 
         [Theory, AutoData]
-        public void Delete(Person id)
+        public void Delete(PersonStore person)
         {
             // arrange
-            var sut = _fixture.Create<InMemoryRepository<IStoreable<Person>, Person>>();
+            var sut = _fixture.Create<InMemoryRepository>();
+            sut.Save(person);
+            var preList = sut.GetAll();
+            // action
+            sut.Delete(person.Id);
             // asserts
-            Assert.Throws<NotImplementedException>(() => sut.Delete(id));
+            Assert.NotEmpty(preList);
+            Assert.Equal(person, preList.First());
+            Assert.Empty(sut.GetAll());
         }
 
         [Fact]
         public void DeleteThrowsArgumentNullException()
         {
             // arrange
-            var sut = _fixture.Create<InMemoryRepository<IStoreable<Person>, Person>>();
+            var sut = _fixture.Create<InMemoryRepository>();
             // asserts
             Assert.Throws<ArgumentNullException>(() => sut.Delete(null));
         }
