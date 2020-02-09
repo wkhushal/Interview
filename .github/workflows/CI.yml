@@ -16,3 +16,5 @@ jobs:
       uses: warrenbuckley/Setup-MSBuild@v1
     - name: Build with MSBuild
       run: msbuild  Interview.sln -p:Configuration=Release
+    - name: Run tests
+      run: dotnet test --no-build
