@@ -31,5 +31,32 @@ namespace Interview.Tests.Storeable
             // asserts
             Assert.Equal(newPerson, sut.Id);
         }
+
+        [Theory, AutoData]
+        public void EqualsTrue(PersonStore store1, PersonStore store2, Person person)
+        {
+            // action
+            store1.Id = person;
+            store2.Id = person;
+            // asserts
+            Assert.Equal(store1, store2);
+        }
+
+        [Theory, AutoData]
+        public void GetHashCodeNotEqual(PersonStore store1, PersonStore store2)
+        {
+            // asserts
+            Assert.NotEqual(store1.GetHashCode(), store2.GetHashCode());
+        }
+
+        [Theory, AutoData]
+        public void GetHashCodeEqual(PersonStore store1, PersonStore store2, Person person)
+        {
+            // action
+            store1.Id = person;
+            store2.Id = person;
+            // asserts
+            Assert.Equal(store1.GetHashCode(), store2.GetHashCode());
+        }
     }
 }
