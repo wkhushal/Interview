@@ -15,11 +15,6 @@ namespace Interview.Model
                 return false;
             }
             
-            //if (!ReferenceEquals(obj, this))
-            //{
-            //    return false;
-            //}
-            
             var p = obj as Person;
             return (p is null) ? false : 
                 Id == p.Id && 
