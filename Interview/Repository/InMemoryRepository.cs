@@ -16,15 +16,27 @@ namespace Interview.Repository
 
         public T Get(I id)
         {
+            if(id == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
             throw new NotImplementedException();
         }
         public void Delete(I id)
         {
+            if (id == null)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
             throw new NotImplementedException();
         }
 
         public void Save(T item)
         {
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
             throw new NotImplementedException();
         }
     }

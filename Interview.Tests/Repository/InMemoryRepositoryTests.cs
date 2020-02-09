@@ -32,15 +32,33 @@ namespace Interview.Tests
         }
 
         [Theory, AutoData]
+        public void GetThrowsArgumentNullException(InMemoryRepository<IStoreable<Person>, Person> sut)
+        {
+            Assert.Throws<ArgumentNullException>(() => sut.Get(null));
+        }
+
+        [Theory, AutoData]
         public void Save(InMemoryRepository<IStoreable<Person>, Person> sut, PersonStore item)
         {
             Assert.Throws<NotImplementedException>(() => sut.Save(item));
         }
 
         [Theory, AutoData]
+        public void SaveThrowsArgumentNullException(InMemoryRepository<IStoreable<Person>, Person> sut)
+        {
+            Assert.Throws<ArgumentNullException>(() => sut.Save(null));
+        }
+
+        [Theory, AutoData]
         public void Delete(InMemoryRepository<IStoreable<Person>, Person> sut, Person id)
         {
             Assert.Throws<NotImplementedException>(() => sut.Delete(id));
+        }
+
+        [Theory, AutoData]
+        public void DeleteThrowsArgumentNullException(InMemoryRepository<IStoreable<Person>, Person> sut)
+        {
+            Assert.Throws<ArgumentNullException>(() => sut.Delete(null));
         }
     }
 }

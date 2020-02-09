@@ -11,15 +11,11 @@ namespace Interview.Storeable
             get => _person;
             set
             {
-                if (value is null) throw new ArgumentNullException(nameof(Id));
-                if (_person is null)
+                if (value is null)
                 {
-                    _person = value;
+                    throw new ArgumentNullException(nameof(Id));
                 }
-                else if(value.Equals(_person))
-                {
-                    _person = value;
-                }
+                _person = value;
             }
         }
     }
