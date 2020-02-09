@@ -1,14 +1,18 @@
-﻿using System;
+﻿using Interview.Store;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Interview.Repository
 {
     public class InMemoryRepository<T, I> : IRepository<T, I>
         where T : IStoreable<I>
     {
+        private readonly IStore _store;
+        public InMemoryRepository(IStore store)
+        {
+            _store = store ?? throw new ArgumentNullException(nameof(store));
+        }
+
         public IEnumerable<T> GetAll()
         {
             throw new NotImplementedException();
@@ -22,6 +26,7 @@ namespace Interview.Repository
             }
             throw new NotImplementedException();
         }
+
         public void Delete(I id)
         {
             if (id == null)

@@ -1,6 +1,7 @@
 using System;
 using AutoFixture;
 using AutoFixture.AutoMoq;
+using AutoFixture.Idioms;
 using Xunit;
 using Interview.Repository;
 using AutoFixture.Xunit2;
@@ -19,45 +20,74 @@ namespace Interview.Tests
             _fixture.Inject(_fixture.Create<PersonStore>());
         }
 
-        [Theory, AutoData]
-        public void GetAll(InMemoryRepository<IStoreable<Person>, Person> sut)
+        [Fact]
+        public void ConstructorGuardArgumentNull()
         {
+            var assertion = new GuardClauseAssertion(_fixture);
+            var constructors = typeof(InMemoryRepository<IStoreable<Person>, Person>).GetConstructors();
+            assertion.Verify(constructors);
+        }
+
+        [Fact]
+        public void GetAll()
+        {
+            // arrange
+            var sut = _fixture.Create<InMemoryRepository<IStoreable<Person>, Person>>();
+            // asserts
             Assert.Throws<NotImplementedException>(() => sut.GetAll());
         }
 
         [Theory, AutoData]
-        public void Get(InMemoryRepository<IStoreable<Person>, Person> sut, Person id)
+        public void Get(Person id)
         {
+            // arrange
+            var sut = _fixture.Create<InMemoryRepository<IStoreable<Person>, Person>>();
+            // asserts
             Assert.Throws<NotImplementedException>(() => sut.Get(id));
         }
 
-        [Theory, AutoData]
-        public void GetThrowsArgumentNullException(InMemoryRepository<IStoreable<Person>, Person> sut)
+        [Fact]
+        public void GetThrowsArgumentNullException()
         {
+            // arrange
+            var sut = _fixture.Create<InMemoryRepository<IStoreable<Person>, Person>>();
+            // asserts
             Assert.Throws<ArgumentNullException>(() => sut.Get(null));
         }
 
         [Theory, AutoData]
-        public void Save(InMemoryRepository<IStoreable<Person>, Person> sut, PersonStore item)
+        public void Save(PersonStore item)
         {
+            // arrange
+            var sut = _fixture.Create<InMemoryRepository<IStoreable<Person>, Person>>();
+            // asserts
             Assert.Throws<NotImplementedException>(() => sut.Save(item));
         }
 
-        [Theory, AutoData]
-        public void SaveThrowsArgumentNullException(InMemoryRepository<IStoreable<Person>, Person> sut)
+        [Fact]
+        public void SaveThrowsArgumentNullException()
         {
+            // arrange
+            var sut = _fixture.Create<InMemoryRepository<IStoreable<Person>, Person>>();
+            // asserts
             Assert.Throws<ArgumentNullException>(() => sut.Save(null));
         }
 
         [Theory, AutoData]
-        public void Delete(InMemoryRepository<IStoreable<Person>, Person> sut, Person id)
+        public void Delete(Person id)
         {
+            // arrange
+            var sut = _fixture.Create<InMemoryRepository<IStoreable<Person>, Person>>();
+            // asserts
             Assert.Throws<NotImplementedException>(() => sut.Delete(id));
         }
 
-        [Theory, AutoData]
-        public void DeleteThrowsArgumentNullException(InMemoryRepository<IStoreable<Person>, Person> sut)
+        [Fact]
+        public void DeleteThrowsArgumentNullException()
         {
+            // arrange
+            var sut = _fixture.Create<InMemoryRepository<IStoreable<Person>, Person>>();
+            // asserts
             Assert.Throws<ArgumentNullException>(() => sut.Delete(null));
         }
     }
