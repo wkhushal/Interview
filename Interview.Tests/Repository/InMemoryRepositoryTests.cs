@@ -20,7 +20,7 @@ namespace Interview.Tests
             _fixture = new Fixture();
             _fixture.Customize(new AutoMoqCustomization());
             _fixture.Inject<IStore>(_fixture.Create<MemStore>());
-            _fixture.Inject(_fixture.Create<PersonStore>());
+            _fixture.Freeze(_fixture.Create<PersonStore>());
         }
 
         [Fact]
@@ -75,6 +75,33 @@ namespace Interview.Tests
             var allStored = sut.GetAll();
             Assert.NotEmpty(allStored);
             Assert.Equal(item, allStored.First());
+        }
+
+        [Theory, AutoData]
+        public void SaveUpdate(IFixture fixture, MemStore store, PersonStore item)
+        {
+            // arrange
+            fixture.Customize(new AutoMoqCustomization());
+            fixture.Inject<IStore>(store);
+            var sut = fixture.Create<InMemoryRepository>();
+            // action Save
+            sut.Save(item);
+            // asserts
+            var allStored = sut.GetAll();
+            Assert.Single(allStored);
+            Assert.Equal(item, allStored.First());
+
+            // arrange update
+            Person person = item.Id;
+            person.Name = fixture.Create("NewPerson");
+            person.BirthDate = fixture.Create<DateTime>();
+            item.Id = person;
+            // action Update
+            sut.Save(item);
+            // asserts
+            var allStoredUpdates = sut.GetAll();
+            Assert.Single(allStoredUpdates);
+            Assert.Equal(item, allStoredUpdates.First());
         }
 
         [Fact]

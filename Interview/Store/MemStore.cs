@@ -13,12 +13,9 @@ namespace Interview.Store
     {
         private readonly ConcurrentDictionary<string, Person> _memStore = new ConcurrentDictionary<string, Person>();
 
-        public MemStore()
-        { }
-
         public Task DeleteAsync(string id, CancellationToken ct)
         {
-            if(_memStore.TryRemove(id, out var _))
+            if (_memStore.TryRemove(id, out var _))
             {
                 return Task.CompletedTask;
             }
@@ -41,7 +38,16 @@ namespace Interview.Store
 
         public Task SaveAsync(Person item, CancellationToken ct)
         {
-            _memStore.GetOrAdd(item.Id, item);
+            _memStore.AddOrUpdate(item.Id, item, (key, existing) =>
+            {
+                if (!item.Equals(existing))
+                {
+                    throw new ArgumentException("Id");
+                }
+                existing.BirthDate = item.BirthDate;
+                existing.Name = item.Name;
+                return existing;
+            });
             return Task.CompletedTask;
         }
     }

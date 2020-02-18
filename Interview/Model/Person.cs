@@ -14,20 +14,14 @@ namespace Interview.Model
             {
                 return false;
             }
-            
-            var p = obj as Person;
-            return (p is null) ? false : 
-                Id == p.Id && 
-                Name == p.Name && 
-                BirthDate == p.BirthDate;
+
+            return (!(obj is Person p)) ? false : Id == p.Id;
         }
 
         public override int GetHashCode()
         {
             int hash = 13;
             hash = (hash * 7) + Id.GetHashCode();
-            hash = (hash * 7) + Name.GetHashCode();
-            hash = (hash * 7) + BirthDate.GetHashCode();
             return hash;
         }
     }
